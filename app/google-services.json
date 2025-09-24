@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "308495600299",
+    "firebase_url": "https://beautyparlor-ae20d-default-rtdb.firebaseio.com",
+    "project_id": "beautyparlor-ae20d",
+    "storage_bucket": "beautyparlor-ae20d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:308495600299:android:b9b65655668a71a51bc5ee",
+        "android_client_info": {
+          "package_name": "com.example.beautyparlor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnRrWmbB0ngAHrDzYbBeSj2Xq4nE2w7No"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
