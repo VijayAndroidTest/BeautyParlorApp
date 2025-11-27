@@ -1,19 +1,60 @@
-# ... (after Assemble Debug APK step)
+name: Android CI/CD Pipeline
 
-# --- CD Stage (Deployment) ---
-- name: 🚀 Deploy to Firebase App Distribution
-  if: success() # Only deploy if the build and tests passed
-  uses: wziegler/github-action-firebase-app-distribution@v3
-  with:
-    # Service account JSON secret we created earlier
-    serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
+on:
+  push:
+    branches: [ master ] # Triggers on push to master
 
-    # The App ID for your Android project in Firebase
-    appId: ${{ env.FIREBASE_APP_ID }}
-    # Path to the APK/AAB artifact to upload
-    file: app/build/outputs/apk/debug/app-debug.apk
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
 
-    # Optional: Specify the testers/groups to receive the build
-    groups: 'testers, internal-users'
-    # Optional: Add release notes
-    releaseNotes: "CI/CD automated build ${{ github.sha }}."
+    # 🛑 ACTION REQUIRED: REPLACE 'beautyparlor-ae20d' with your full Firebase App ID,
+    # but the project name is usually not the App ID.
+    # The App ID looks like 1:1234567890:android:abcdef123456
+    env:
+      FIREBASE_APP_ID: 'beautyparlor-ae20d'
+
+    steps:
+      - name: ⬇️ Checkout Code
+        uses: actions/checkout@v4
+
+      - name: ☕ Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: ⚙️ Setup Gradle Cache
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: ➕ Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # --- CI Stages (Build & Test) ---
+      - name: 🧪 Run Unit Tests
+        run: ./gradlew test
+
+      # If this step fails, it means your code has compilation errors.
+      - name: 🏗️ Assemble Debug APK
+        run: ./gradlew assembleDebug
+
+      # --- CD Stage (Deployment) ---
+      # This step uses the corrected action reference to resolve the previous error.
+      - name: 🚀 Deploy to Firebase App Distribution
+        if: success() # Only deploy if the build and tests passed
+        uses: wziegler/github-action-firebase-app-distribution@v3
+        with:
+          # 🛑 ACTION REQUIRED: The SECRET must be set up in GitHub Settings.
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
+
+          # The App ID from the 'env' block
+          appId: ${{ env.FIREBASE_APP_ID }}
+
+          # Path to the APK artifact to upload
+          file: app/build/outputs/apk/debug/app-debug.apk
+
+          # The groups set up in Firebase App Distribution
+          groups: 'testers, internal-users'
+
+          # Optional: Add release notes
+          releaseNotes: "CI/CD automated build ${{ github.sha }}."
