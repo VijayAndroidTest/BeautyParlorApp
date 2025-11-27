@@ -1,7 +1,8 @@
+# ... (after Assemble Debug APK step)
+
 # --- CD Stage (Deployment) ---
 - name: 🚀 Deploy to Firebase App Distribution
   if: success() # Only deploy if the build and tests passed
-  # *** THIS IS THE CORRECTED LINE ***
   uses: wziegler/github-action-firebase-app-distribution@v3
   with:
     # Service account JSON secret we created earlier
@@ -9,4 +10,10 @@
 
     # The App ID for your Android project in Firebase
     appId: ${{ env.FIREBASE_APP_ID }}
-    # ... (rest of the 'with' block)
+    # Path to the APK/AAB artifact to upload
+    file: app/build/outputs/apk/debug/app-debug.apk
+
+    # Optional: Specify the testers/groups to receive the build
+    groups: 'testers, internal-users'
+    # Optional: Add release notes
+    releaseNotes: "CI/CD automated build ${{ github.sha }}."
