@@ -10,7 +10,7 @@ pipeline {
         KEYSTORE_PASSWORD = credentials('KEYSTORE_PASSWORD')
         KEY_PASSWORD = credentials('KEY_PASSWORD')
         FIREBASE_TOKEN = credentials('FIREBASE_TOKEN')
-        FIREBASE_JSON = credentials('firebase-beautyparlor-json')
+        FIREBASE_JSON = credentials('beautyparlor-firebase')
     }
 
     stages {
@@ -23,8 +23,10 @@ pipeline {
 
         stage('Build Release APK') {
             steps {
-                // Assemble the release APK using the signing config in your build.gradle.kts
-                sh './gradlew assembleRelease'
+                // Point the environment variable to the path of the temporary credential file
+                withCredentials([file(credentialsId: 'beautyparlor-firebase', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                    sh './gradlew assembleRelease'
+                }
             }
         }
 
