@@ -35,7 +35,7 @@ android {
             firebaseAppDistribution {
                 artifactType = "APK"
                 releaseNotes = "New test build from Jenkins"
-                groups = "testers"
+                groups = "beauty-parlor-testers"
             }
         }
         release {
@@ -50,7 +50,7 @@ android {
                 // This path is correct for assembleRelease output
                 artifactPath = "app/build/outputs/apk/release/app-release.apk"
                 releaseNotes = "Production Release v1.1"
-                groups = "testers"
+                groups = "beauty-parlor-testers"
             }
 
         }
