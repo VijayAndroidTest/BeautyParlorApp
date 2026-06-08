@@ -2,6 +2,7 @@ package com.example.beautyparlor
 
 import BeautyParlorApp
 import MyBookingsScreen
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -35,27 +36,42 @@ class MainActivity : ComponentActivity() {
         // State to control dialog visibility
         var showUpdateDialog by mutableStateOf(false)
         var updateMessage by mutableStateOf("")
-
+        var updateUrl by mutableStateOf("") // ADD THIS LINE
         val remoteConfig = FirebaseRemoteConfig.getInstance()
         val configSettings = FirebaseRemoteConfigSettings.Builder()
             .setMinimumFetchIntervalInSeconds(0)
             .build()
         remoteConfig.setConfigSettingsAsync(configSettings)
-
+        Log.d("RemoteConfig", "Fetch initiated...")
         remoteConfig.fetchAndActivate().addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
                 val minVersionCode = remoteConfig.getLong("min_version_code")
                 updateMessage = remoteConfig.getString("update_message")
+                updateUrl = remoteConfig.getString("update_url") // ADD THIS LINE
                 val currentVersionCode = packageManager.getPackageInfo(packageName, 0).versionCode.toLong()
-
+// --- RE-ADDED LOGS FOR TESTING ---
+                Log.d("RemoteConfig", "--- MANDATORY UPDATE CHECK ---")
+                Log.d("RemoteConfig", "Current Version: $currentVersionCode | Required Version: $minVersionCode")
                 if (currentVersionCode < minVersionCode) {
                     showUpdateDialog = true
+                    Log.w("RemoteConfig", "ALERT: Update required. Dialog triggered.")
                 }
+                else {
+                    Log.d("RemoteConfig", "Version is up to date.")
+                }
+            }else {
+                Log.e("RemoteConfig", "Fetch failed: ${task.exception}")
             }
         }
         setContent {
             BeautyParlorTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
+                    if (showUpdateDialog) {
+                        UpdateDialog(
+                            message = updateMessage,
+                            updateUrl = updateUrl // The variable fetched from Firebase
+                        )
+                    }
                     val mainNavController = rememberNavController()
                     var cartItems by remember { mutableStateOf(listOf<ServiceSubItemEntity>()) }
 
