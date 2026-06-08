@@ -15,9 +15,9 @@ android {
         create("release") {
             storeFile = file("C:\\Jenkins\\beautykeys\\beauty_parlor_release.jks")
             // These keys must match the environment variables defined in your Jenkinsfile
-            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "Vijay@123"
+            storePassword = System.getenv("KEYSTORE_PASSWORD")
             keyAlias = "beautyalias"
-            keyPassword = System.getenv("KEY_PASSWORD") ?: "Vijay@123"
+            keyPassword = System.getenv("KEY_PASSWORD")
         }
     }
 
@@ -25,8 +25,11 @@ android {
         applicationId = "com.example.beautyparlor"
         minSdk = 24
         targetSdk = 35
-        versionCode = 2
-        versionName = "1.1"
+
+        val jenkinsBuildNumber = System.getenv("BUILD_NUMBER")?.toInt() ?: 1
+
+        versionCode = jenkinsBuildNumber
+        versionName = "1.${jenkinsBuildNumber}"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

@@ -21,14 +21,34 @@ import com.example.beautyparlor.ui.theme.BeautyParlorTheme
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.example.beautyparlor.entities.ServiceSubItem as ServiceSubItemEntity
-
+import android.util.Log
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
         // Optional: Remove signOut for auto-login
         // FirebaseAuth.getInstance().signOut()
+// --- Firebase Remote Config Initialization ---
+        val remoteConfig = FirebaseRemoteConfig.getInstance()
+        val configSettings = FirebaseRemoteConfigSettings.Builder()
+            .setMinimumFetchIntervalInSeconds(0) // Set to 0 for real-time testing
+            .build()
+        remoteConfig.setConfigSettingsAsync(configSettings)
 
+        // Fetch and activate
+        remoteConfig.fetchAndActivate()
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val updated = task.result
+                    Log.d("RemoteConfig", "Config params updated: $updated")
+                    // Example: Get a value
+                    // val myValue = remoteConfig.getString("my_key")
+                } else {
+                    Log.e("RemoteConfig", "Fetch failed")
+                }
+            }
         setContent {
             BeautyParlorTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
