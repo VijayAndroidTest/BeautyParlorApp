@@ -6,8 +6,9 @@ pipeline {
         // KEYSTORE_PASSWORD: The password for the .jks file
         // KEY_PASSWORD: The password for the specific alias inside the .jks
         // FIREBASE_TOKEN: Your Firebase CLI CI token
-        KEYSTORE_PASSWORD = credentials('beauty_parlor_release')
-        KEY_PASSWORD = credentials('beautyalias')
+        // These IDs match the ones shown in your screenshot (171.png)
+        KEYSTORE_PASSWORD = credentials('KEYSTORE_PASSWORD')
+        KEY_PASSWORD = credentials('KEY_PASSWORD')
         FIREBASE_TOKEN = credentials('FIREBASE_TOKEN')
         FIREBASE_JSON = credentials('firebase-beautyparlor-json')
     }

@@ -14,7 +14,7 @@ android {
     signingConfigs {
         create("release") {
             storeFile = file("C:\\Jenkins\\beautykeys\\beauty_parlor_release.jks")
-            // Jenkins injects the secret into an environment variable named after the credential ID
+            // These keys must match the environment variables defined in your Jenkinsfile
             storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "Vijay@123"
             keyAlias = "beautyalias"
             keyPassword = System.getenv("KEY_PASSWORD") ?: "Vijay@123"
