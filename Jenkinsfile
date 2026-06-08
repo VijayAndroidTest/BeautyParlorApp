@@ -23,7 +23,7 @@ pipeline {
 
         stage('Build Release APK') {
             steps {
-                // Point the environment variable to the path of the temporary credential file
+                // Use withCredentials to safely expose the JSON key file path
                 withCredentials([file(credentialsId: 'beautyparlor-firebase', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
                     sh './gradlew assembleRelease'
                 }
