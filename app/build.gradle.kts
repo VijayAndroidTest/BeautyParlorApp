@@ -4,11 +4,21 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("kotlin-kapt")
     id("com.google.gms.google-services")
+    alias(libs.plugins.google.firebase.appdistribution)
 }
 
 android {
     namespace = "com.example.beautyparlor"
     compileSdk = 35
+
+    signingConfigs {
+        create("release") {
+            storeFile = file("C:\\Jenkins\\beautykeys\\beauty_parlor_release.jks")
+            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "Vijay@123"
+            keyAlias = "beautyalias"
+            keyPassword = System.getenv("beautyalias")?: "Vijay@123"
+        }
+    }
 
     defaultConfig {
         applicationId = "com.example.beautyparlor"
@@ -16,17 +26,32 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
+        debug {
+            firebaseAppDistribution {
+                artifactType = "APK"
+                releaseNotes = "New test build from Jenkins"
+                groups = "testers"
+            }
+        }
         release {
-            isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            firebaseAppDistribution {
+                artifactType = "APK"
+                // This path is correct for assembleRelease output
+                artifactPath = "app/build/outputs/apk/release/app-release.apk"
+                releaseNotes = "Production Release v1.1"
+                groups = "testers"
+            }
+
         }
     }
     compileOptions {
@@ -64,6 +89,7 @@ dependencies {
     implementation(libs.firebase.analytics.ktx)
     implementation(libs.firebase.database.ktx)
     implementation(libs.firebase.appcheck.ktx)
+    implementation(libs.firebase.config)
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")

@@ -12,6 +12,8 @@ activityCompose = "1.9.2"
 composeBom = "2024.09.01"
 navigationCompose = "2.9.3"
 materialIconsExtended = "1.7.5"
+googleFirebaseAppdistribution = "5.2.1"
+firebaseConfig = "23.1.0"
 
 [libraries]
 # Androidx Libraries
@@ -47,8 +49,10 @@ firebase-appcheck-ktx = { module = "com.google.firebase:firebase-appcheck-ktx" }
 
 # Kotlinx Coroutines
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
+firebase-config = { group = "com.google.firebase", name = "firebase-config", version.ref = "firebaseConfig" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+google-firebase-appdistribution = { id = "com.google.firebase.appdistribution", version.ref = "googleFirebaseAppdistribution" }
