@@ -38,15 +38,35 @@ class MainActivity : ComponentActivity() {
         remoteConfig.setConfigSettingsAsync(configSettings)
 
         // Fetch and activate
+        // Fetch and activate
         remoteConfig.fetchAndActivate()
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val updated = task.result
-                    Log.d("RemoteConfig", "Config params updated: $updated")
-                    // Example: Get a value
-                    // val myValue = remoteConfig.getString("my_key")
+                    Log.d("RemoteConfig", "Fetch successful. Params updated: $updated")
+
+                    // 1. Log the values retrieved from Firebase
+                    val minVersionCode = remoteConfig.getLong("min_version_code")
+                    val updateMessage = remoteConfig.getString("update_message")
+
+                    // 2. Get your app's current version code
+                    val currentVersionCode = packageManager.getPackageInfo(packageName, 0).versionCode.toLong()
+
+                    // 3. Log everything to compare in Logcat
+                    Log.d("RemoteConfig", "--- MANDATORY UPDATE CHECK ---")
+                    Log.d("RemoteConfig", "Current App Version: $currentVersionCode")
+                    Log.d("RemoteConfig", "Min Required Version: $minVersionCode")
+                    Log.d("RemoteConfig", "Update Message: $updateMessage")
+
+                    // 4. Check the condition
+                    if (currentVersionCode < minVersionCode) {
+                        Log.w("RemoteConfig", "ALERT: Current version is lower than required. Triggering Dialog!")
+                        // Call your showUpdateDialog() function here
+                    } else {
+                        Log.d("RemoteConfig", "Version is up to date. No dialog needed.")
+                    }
                 } else {
-                    Log.e("RemoteConfig", "Fetch failed")
+                    Log.e("RemoteConfig", "Fetch failed: ${task.exception}")
                 }
             }
         setContent {
